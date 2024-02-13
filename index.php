@@ -1,48 +1,119 @@
+<!-- For more projects: Visit codeastro.com  -->
+<?php
+error_reporting(1);
+session_start();
+include("dbcon.php");
+if(isset($_SESSION['user_session'])){
+  
+  $invoice_number="CA-".invoice_number();
+	header("location:home.php?invoice_number=$invoice_number");
+}
+
+   if(isset($_POST['submit'])){  //******Login Form*******
+  $username =$_POST['username'];
+
+  $password = $_POST['password'];
+
+  $password = sha1($password);
+
+  $select_sql = "SELECT * FROM users ";
+
+  $select_query = mysqli_query($con,$select_sql);
+   
+  if($select_query){
+
+  	while ($row =mysqli_fetch_array($select_query)) {
+  		$s_username = $row['user_name'];
+  		$s_password = $row['password'];
+  	}
+  }
+
+ if($s_username == $username && $s_password == $password){
+          
+         $_SESSION['user_session'] = $s_username;
+         $invoice_number="CA-".invoice_number();
+ 	       header("location:home.php?invoice_number=$invoice_number");
+
+
+ }else{
+ 	  	    $error_msg = "<center><font color='red'>Login Failed</font></center>";
+ }
+
+}                  //******Login Form*******
+
+  function invoice_number(){   //********Outputting Random Number For Invoice Number********
+
+    $chars = "09302909209300923";
+
+    srand((double)microtime()*1000000);
+
+    $i = 1;
+
+    $pass = '';
+
+    while($i <=7){
+
+      $num  = rand()%10;
+      $tmp  = substr($chars, $num,1);
+      $pass = $pass.$tmp;
+      $i++;
+    }
+    return $pass;
+                        //********Outputting Random Number For Invoice Number********
+  }                       
+?>
+
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Pharmacy Management - Login</title>
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-		<script src="bootstrap/js/jquery.min.js"></script>
-		<script src="bootstrap/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-    <link rel="shortcut icon" href="images/icon.svg" type="image/x-icon">
-    <link rel="stylesheet" href="css/index.css">
-    <script src="js/index.js"></script>
-  </head>
-  <body>
-    <div class="container">
-      <div class="card m-auto p-2">
-        <div class="card-body">
-          <form name="login-form" class="login-form" action="home.php" method="post" onsubmit="return validateCredentials();">
-            <div class="logo">
-        			<img src="images/prof.jpg" class="profile"/>
-        			<h1 class="logo-caption"><span class="tweak">L</span>ogin</h1>
-        		</div> <!-- logo class -->
-            <div class="input-group form-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-user text-white"></i></span>
-              </div>
-              <input name="username" type="text" class="form-control" placeholder="username" onkeyup="validate();" required>
-            </div> <!--input-group class -->
-            <div class="input-group form-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-key text-white"></i></span>
-              </div>
-              <input name="password" type="password" class="form-control" placeholder="password" onkeyup="validate();" required>
-            </div> <!-- input-group class -->
-            <div class="form-group">
-              <button class="btn btn-default btn-block btn-custom">Login</button>
-            </div>
-          </form><!-- form close -->
-        </div> <!-- cord-body class -->
-        <div class="card-footer">
-          <div class="text-center">
-            <a class="text-light" href="#">Forgot password?</a>
-          </div>
-        </div> <!-- cord-footer class -->
-      </div> <!-- card class -->
-    </div> <!-- container class -->
-  </body>
+<html>
+<!DOCTYPE html>
+<html>
+<head>
+<!-- For more projects: Visit codeastro.com  -->
+	<title>SPMS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.css">
+    <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    
+</head>
+<body>
+
+	<center>
+		<h1>Simple Pharmacy Management System</h1>
+	</center>
+
+	<div class="content" style="width: 400px">
+
+		<form method="POST">
+
+		<table class="table table-bordered table-responsive " >
+			<tr>
+			  <td><label for="username">Usename</label></td>
+			  <td><input type="text" autocomplete="off" name="username" class="form-group" required></td>
+			</tr>
+			<tr>
+				<td><label for="password">Password</label></td>
+				<td><input type="password" name="password" required></td>
+			</tr>
+      <input type="hidden" aucomplete="off" name="invoice_number" value="<?php echo 'CA-'.invoice_number()?>">
+
+		</table>
+    
+
+		<input type="submit" name="submit" class="btn btn-success btn-large" value="Login">
+
+    <?php echo $error_msg;?>
+
+	</form>
+
+		
+  </div>
+  
+  
+ 
+</body>
 </html>
+<!-- For more projects: Visit codeastro.com  -->
